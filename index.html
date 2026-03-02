@@ -145,6 +145,101 @@
 
     footer a:hover { text-decoration: underline; }
 
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .overlay.active { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 360px;
+    }
+
+    .modal h2 {
+      font-size: 1.15rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.95rem;
+      outline: none;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal input:focus { border-color: var(--accent); }
+
+    .modal .error-msg {
+      color: #f87171;
+      font-size: 0.8rem;
+      min-height: 1.2em;
+      margin-bottom: 0.75rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+
+    .modal-buttons button {
+      padding: 0.5rem 1.1rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-cancel {
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .btn-submit {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .btn-submit:hover { background: var(--accent-hover); }
+    .btn-cancel:hover { background: #475569; }
+
+    .card-locked::after {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 14px;
+      background: currentColor;
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E") no-repeat center;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E") no-repeat center;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+      opacity: 0.5;
+    }
+
     @media (max-width: 640px) {
       header { padding: 2.5rem 1.5rem 1.5rem; }
       header h1 { font-size: 1.8rem; }
@@ -195,11 +290,11 @@
       <span class="tag tag-live">Live</span>
     </a>
 
-    <a href="https://dma.hanlabnw.com" class="card">
+    <a href="#" class="card" data-protected data-url="https://dma.hanlabnw.com" data-pw="contraception" data-name="Dan Mishell Award">
       <div class="card-header">
         <div class="card-icon icon-dma">JC</div>
         <div>
-          <div class="card-title">Dan Mishell Award</div>
+          <div class="card-title card-locked">Dan Mishell Award</div>
           <div class="card-domain">dma.hanlabnw.com</div>
         </div>
       </div>
@@ -207,11 +302,11 @@
       <span class="tag tag-live">Live</span>
     </a>
 
-    <a href="https://github.com/leolhan1425/payeriq" class="card">
+    <a href="#" class="card" data-protected data-url="https://github.com/leolhan1425/payeriq" data-pw="iqpayer" data-name="PayerIQ">
       <div class="card-header">
         <div class="card-icon icon-payer">$</div>
         <div>
-          <div class="card-title">PayerIQ</div>
+          <div class="card-title card-locked">PayerIQ</div>
           <div class="card-domain">github.com/leolhan1425/payeriq</div>
         </div>
       </div>
@@ -220,8 +315,71 @@
     </a>
   </div>
 
+  <div class="overlay" id="pw-overlay">
+    <div class="modal">
+      <h2 id="modal-title">Enter Password</h2>
+      <p id="modal-subtitle">This project is password-protected.</p>
+      <input type="password" id="pw-input" placeholder="Password" autocomplete="off">
+      <div class="error-msg" id="pw-error"></div>
+      <div class="modal-buttons">
+        <button class="btn-cancel" id="pw-cancel">Cancel</button>
+        <button class="btn-submit" id="pw-submit">Enter</button>
+      </div>
+    </div>
+  </div>
+
   <footer>
     &copy; 2026 HanLab NW &middot; <a href="https://github.com/leolhan1425">GitHub</a>
   </footer>
+
+  <script>
+    (function() {
+      var overlay = document.getElementById('pw-overlay');
+      var input = document.getElementById('pw-input');
+      var error = document.getElementById('pw-error');
+      var title = document.getElementById('modal-title');
+      var currentTarget = null;
+
+      document.querySelectorAll('[data-protected]').forEach(function(card) {
+        card.addEventListener('click', function(e) {
+          e.preventDefault();
+          currentTarget = { url: card.dataset.url, pw: card.dataset.pw };
+          title.textContent = card.dataset.name;
+          input.value = '';
+          error.textContent = '';
+          overlay.classList.add('active');
+          setTimeout(function() { input.focus(); }, 50);
+        });
+      });
+
+      document.getElementById('pw-submit').addEventListener('click', check);
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') check();
+      });
+
+      document.getElementById('pw-cancel').addEventListener('click', close);
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) close();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) close();
+      });
+
+      function check() {
+        if (!currentTarget) return;
+        if (input.value.toLowerCase() === currentTarget.pw.toLowerCase()) {
+          window.location.href = currentTarget.url;
+        } else {
+          error.textContent = 'Incorrect password.';
+          input.select();
+        }
+      }
+
+      function close() {
+        overlay.classList.remove('active');
+        currentTarget = null;
+      }
+    })();
+  </script>
 </body>
 </html>
